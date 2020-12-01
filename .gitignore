@@ -1,0 +1,13 @@
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+venv
+*.iml
+out
+gen
+
+__pycache__/game.cpython-37.pyc
+__pycache__/menu.cpython-37.pyc

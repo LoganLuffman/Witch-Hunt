@@ -31,6 +31,7 @@ class Game:
         # Creating menu objects
         self.main_menu = MainMenu(self)
         self.settings = SettingsMenu(self)
+        self.controls = ControlsMenu(self)
 
         self.current_menu = self.main_menu
 
