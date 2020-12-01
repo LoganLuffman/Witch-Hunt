@@ -156,11 +156,39 @@ class SettingsMenu(Menu):
                 self.state = 'Volume'
                 self.cursor_rect.midtop = (self.vol_x + self. offset, self.vol_y)
         elif self.game.START_KEY:
-            # TODO: Create a Volume Menu and a Controls Menu
-            if self.state == 'Controls':
+            if self.state == 'Volume':
+                self.game.current_menu = self.game.volume
+                self.run_display = False
+            elif self.state == 'Controls':
                 self.game.current_menu = self.game.controls
                 self.run_display = False
-            pass
+
+
+class VolumeMenu(Menu):
+
+    def __init__(self, game):
+        Menu.__init__(self, game)
+
+        self.label_x = self.mid_width / 2
+        self.vol_x, self.vol_y = self.label_x, self.mid_height - 200
+
+    def display_menu(self):
+
+        self.run_display = True
+
+        while self.run_display:
+            self.game.check_events()
+            self.check_input()
+            self.game.display.fill((0, 0, 0))
+
+            self.game.draw_text('Main Volume', 60, self.vol_x, self.vol_y)
+
+            self.blit_screen()
+
+    def check_input(self):
+        if self.game.BACK_KEY:
+            self.game.current_menu = self.game.settings
+            self.run_display = False
 
 
 class ControlsMenu(Menu):
