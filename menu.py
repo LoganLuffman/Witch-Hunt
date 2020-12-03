@@ -63,7 +63,7 @@ class MainMenu(Menu):
 
     # Logic to move cursor when an arrow key is pressed
     def move_cursor(self):
-        if self.game.DOWN_KEY:
+        if self.game.DOWN:
             if self.state == 'Start':
                 self.cursor_rect.midtop = (self.scores_x + self.offset, self.scores_y)
                 self.state = 'Scores'
@@ -76,7 +76,7 @@ class MainMenu(Menu):
             elif self.state == 'Exit':
                 self.cursor_rect.midtop = (self.start_x + self.offset, self.start_y)
                 self.state = 'Start'
-        elif self.game.UP_KEY:
+        elif self.game.UP:
             if self.state == 'Start':
                 self.cursor_rect.midtop = (self.exit_x + self.offset, self.exit_y)
                 self.state = 'Exit'
@@ -95,7 +95,7 @@ class MainMenu(Menu):
     def check_input(self):
         self.move_cursor()
 
-        if self.game.START_KEY:
+        if self.game.START:
             if self.state == 'Start':
                 self.game.playing = True
             elif self.state == 'Scores':
@@ -145,17 +145,17 @@ class SettingsMenu(Menu):
     # Logic to see if a menu is item is selected and
     # what to do what an option is selected
     def check_input(self):
-        if self.game.BACK_KEY:
+        if self.game.BACK:
             self.game.current_menu = self.game.main_menu
             self.run_display = False
-        elif self.game.UP_KEY or self.game.DOWN_KEY:
+        elif self.game.UP or self.game.DOWN:
             if self.state == 'Volume':
                 self.state = 'Controls'
                 self.cursor_rect.midtop = (self.controls_x + self.offset, self.controls_y)
             elif self.state == 'Controls':
                 self.state = 'Volume'
                 self.cursor_rect.midtop = (self.vol_x + self. offset, self.vol_y)
-        elif self.game.START_KEY:
+        elif self.game.START:
             if self.state == 'Volume':
                 self.game.current_menu = self.game.volume
                 self.run_display = False
@@ -186,7 +186,7 @@ class VolumeMenu(Menu):
             self.blit_screen()
 
     def check_input(self):
-        if self.game.BACK_KEY:
+        if self.game.BACK:
             self.game.current_menu = self.game.settings
             self.run_display = False
 
@@ -212,6 +212,12 @@ class ControlsMenu(Menu):
             self.check_input()
             self.game.display.fill((0, 0, 0))
 
+            self.draw_button('UP', self.UP_x, self.UP_y)
+            self.draw_button('DOWN', self.DOWN_x, self.DOWN_y)
+            self.draw_button('LEFT', self.LEFT_x, self.LEFT_y)
+            self.draw_button('RIGHT', self.RIGHT_x, self.RIGHT_y)
+            self.draw_button('ATTACK', self.ATTACK_x, self.ATTACK_y)
+
             self.game.draw_text('Up', 60, self.UP_x, self.UP_y)
             self.game.draw_text('Down', 60, self.DOWN_x, self.DOWN_y)
             self.game.draw_text('Left', 60, self.LEFT_x, self.LEFT_y)
@@ -221,6 +227,42 @@ class ControlsMenu(Menu):
             self.blit_screen()
 
     def check_input(self):
-        if self.game.BACK_KEY:
+        if self.game.BACK:
             self.game.current_menu = self.game.settings
             self.run_display = False
+
+    def draw_button(self, key, x, y):
+        color_dark = (100, 100, 100)
+        color_light = (170, 170, 170)
+
+        length = 150
+        width = 50
+
+        button_offset_x = x + 600
+        button_offset_y = y - 20
+
+        text_offset_x = x + 675
+        text_offset_y = y + 7
+
+        mouse_pos = pygame.mouse.get_pos()
+
+        if button_offset_x <= mouse_pos[0] <= button_offset_x + length and button_offset_y <= mouse_pos[1] <= button_offset_y + width:
+            pygame.draw.rect(self.game.display, color_light, [button_offset_x, button_offset_y, length, width])
+        else:
+            pygame.draw.rect(self.game.display, color_dark, [button_offset_x, button_offset_y, length, width])
+
+        if key == 'UP':
+            key_name = pygame.key.name(self.game.UP_KEY)
+            self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)
+        elif key == 'DOWN':
+            key_name = pygame.key.name(self.game.DOWN_KEY)
+            self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)
+        elif key == 'LEFT':
+            key_name = pygame.key.name(self.game.LEFT_KEY)
+            self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)
+        elif key == 'RIGHT':
+            key_name = pygame.key.name(self.game.RIGHT_KEY)
+            self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)
+        elif key == 'ATTACK':
+            key_name = pygame.key.name(self.game.ATTACK_KEY)
+            self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)

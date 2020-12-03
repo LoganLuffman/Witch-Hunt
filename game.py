@@ -19,7 +19,21 @@ class Game:
         self.playing = False
 
         # Variables used to signify when keys are pressed
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.UP_KEY = pygame.K_UP
+        self.DOWN_KEY = pygame.K_DOWN
+        self.LEFT_KEY = pygame.K_LEFT
+        self.RIGHT_KEY = pygame.K_RIGHT
+        self.START_KEY = pygame.K_RETURN
+        self.BACK_KEY = pygame.K_BACKSPACE
+        self.ATTACK_KEY = pygame.K_SPACE
+
+        self.UP = False
+        self.DOWN = False
+        self.LEFT = False
+        self.RIGHT = False
+        self.START = False
+        self.BACK = False
+        self.ATTACK = False
 
         # Create surface and window where the player will be able to see the menu / game
         self.display = pygame.Surface((self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT))
@@ -42,7 +56,7 @@ class Game:
             self.check_events()
 
             # Used to go back to previous screen. This can be deleted once gameplay is implemented
-            if self.START_KEY:
+            if self.BACK:
                 self.playing = False
 
             # Setting the background color and drawing placeholder text on the screen.
@@ -65,14 +79,20 @@ class Game:
 
             # Checks if certain keys are press
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.START_KEY = True
-                if event.key == pygame.K_BACKSPACE:
-                    self.BACK_KEY = True
-                if event.key == pygame.K_DOWN:
-                    self.DOWN_KEY = True
-                if event.key == pygame.K_UP:
-                    self.UP_KEY = True
+                if event.key == self.START_KEY:
+                    self.START = True
+                if event.key == self.BACK_KEY:
+                    self.BACK = True
+                if event.key == self.DOWN_KEY:
+                    self.DOWN = True
+                if event.key == self.UP_KEY:
+                    self.UP = True
+                if event.key == self.LEFT_KEY:
+                    self.LEFT = True
+                if event.key == self.RIGHT_KEY:
+                    self.RIGHT = True
+                if event.key == self.ATTACK_KEY:
+                    self.ATTACK = True
             # TODO: Make window resizable and have text on screen dynamically change with window size
             # elif event.type == pygame.VIDEORESIZE:
             #     self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT = event.size
@@ -81,7 +101,13 @@ class Game:
 
     # Function used to reset the keys
     def reset_keys(self):
-        self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+        self.UP = False
+        self.DOWN = False
+        self.LEFT = False
+        self.RIGHT = False
+        self.START = False
+        self.BACK = False
+        self.ATTACK = False
 
     # Function used to draw text on the screen
     def draw_text(self, text, size, x, y):
