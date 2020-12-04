@@ -196,6 +196,7 @@ class ControlsMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
 
+        # Labels for the controls of the game
         self.label_x = self.mid_width / 2
         self.UP_x, self.UP_y = self.label_x, self.mid_height - 200
         self.DOWN_x, self.DOWN_y = self.label_x, self.mid_height - 100
@@ -203,13 +204,22 @@ class ControlsMenu(Menu):
         self.RIGHT_x, self.RIGHT_y = self.label_x, self.mid_height + 100
         self.ATTACK_x, self.ATTACK_y = self.label_x, self.mid_height + 200
 
+        # Button sizes
+        self.button_length = 150
+        self.button_width = 50
+
+        # Button rect locations to change the default controls
+        self.UP_offset_x, self.UP_offset_y = self.UP_x + 600, self.UP_y - 20
+        self.DOWN_offset_x, self.DOWN_offset_y = self.DOWN_x + 600, self.DOWN_y - 20
+        self.LEFT_offset_x, self.LEFT_offset_y = self.LEFT_x + 600, self.LEFT_y - 20
+        self.RIGHT_offset_x, self.RIGHT_offset_y = self.RIGHT_x + 600, self.RIGHT_y - 20
+        self.ATTACK_offset_x, self.ATTACK_offset_y = self.ATTACK_x + 600, self.ATTACK_y - 20
+
     def display_menu(self):
 
         self.run_display = True
 
         while self.run_display:
-            self.game.check_events()
-            self.check_input()
             self.game.display.fill((0, 0, 0))
 
             self.draw_button('UP', self.UP_x, self.UP_y)
@@ -224,33 +234,51 @@ class ControlsMenu(Menu):
             self.game.draw_text('Right', 60, self.RIGHT_x, self.RIGHT_y)
             self.game.draw_text('Attack', 60, self.ATTACK_x, self.ATTACK_y)
 
+            self.game.check_events()
+            self.check_input()
             self.blit_screen()
 
     def check_input(self):
+        mouse_pos = pygame.mouse.get_pos()
+
         if self.game.BACK:
             self.game.current_menu = self.game.settings
             self.run_display = False
 
+        # Checking to make sure the the mouse is being clicked within the Button rect
+        # Print statements used for testing
+        if self.game.MOUSECLICK:
+            if (self.UP_offset_x <= mouse_pos[0] <= self.UP_offset_x + self.button_length and
+                    self.UP_offset_y <= mouse_pos[1] <= self.UP_offset_y + self.button_width):
+                print('UP')
+            elif (self.DOWN_offset_x <= mouse_pos[0] <= self.DOWN_offset_x + self.button_length and
+                  self.DOWN_offset_y <= mouse_pos[1] <= self.DOWN_offset_y + self.button_width):
+                print('DOWN')
+            elif (self.LEFT_offset_x <= mouse_pos[0] <= self.LEFT_offset_x + self.button_length and
+                  self.LEFT_offset_y <= mouse_pos[1] <= self.LEFT_offset_y + self.button_width):
+                print('LEFT')
+            elif (self.RIGHT_offset_x <= mouse_pos[0] <= self.RIGHT_offset_x + self.button_length and
+                  self.RIGHT_offset_y <= mouse_pos[1] <= self.RIGHT_offset_y + self.button_width):
+                print('RIGHT')
+            elif (self.ATTACK_offset_x <= mouse_pos[0] <= self.ATTACK_offset_x + self.button_length and
+                  self.ATTACK_offset_y <= mouse_pos[1] <= self.ATTACK_offset_y + self.button_width):
+                print('ATTACK')
+
     def draw_button(self, key, x, y):
-        color_dark = (100, 100, 100)
-        color_light = (170, 170, 170)
-
-        length = 150
-        width = 50
-
-        button_offset_x = x + 600
-        button_offset_y = y - 20
-
-        text_offset_x = x + 675
-        text_offset_y = y + 7
+        color_dark, color_light = (100, 100, 100), (170, 170, 170)
+        button_offset_x, button_offset_y = x + 600, y - 20
+        text_offset_x, text_offset_y = x + 675, y + 7
 
         mouse_pos = pygame.mouse.get_pos()
 
-        if button_offset_x <= mouse_pos[0] <= button_offset_x + length and button_offset_y <= mouse_pos[1] <= button_offset_y + width:
-            pygame.draw.rect(self.game.display, color_light, [button_offset_x, button_offset_y, length, width])
+        # Hover effect for if the mouse is over the button rect or not
+        if (button_offset_x <= mouse_pos[0] <= button_offset_x + self.button_length and
+                button_offset_y <= mouse_pos[1] <= button_offset_y + self.button_width):
+            pygame.draw.rect(self.game.display, color_light, [button_offset_x, button_offset_y, self.button_length, self.button_width])
         else:
-            pygame.draw.rect(self.game.display, color_dark, [button_offset_x, button_offset_y, length, width])
+            pygame.draw.rect(self.game.display, color_dark, [button_offset_x, button_offset_y, self.button_length, self.button_width])
 
+        # Pulls keybindings currently assigned to the controls and displays the text information
         if key == 'UP':
             key_name = pygame.key.name(self.game.UP_KEY)
             self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)

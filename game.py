@@ -26,6 +26,7 @@ class Game:
         self.START_KEY = pygame.K_RETURN
         self.BACK_KEY = pygame.K_BACKSPACE
         self.ATTACK_KEY = pygame.K_SPACE
+        self.MOUSECLICK_KEY = pygame.MOUSEBUTTONDOWN
 
         self.UP = False
         self.DOWN = False
@@ -34,6 +35,7 @@ class Game:
         self.START = False
         self.BACK = False
         self.ATTACK = False
+        self.MOUSECLICK = False
 
         # Create surface and window where the player will be able to see the menu / game
         self.display = pygame.Surface((self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT))
@@ -81,7 +83,7 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == self.START_KEY:
                     self.START = True
-                if event.key == self.BACK_KEY:
+                elif event.key == self.BACK_KEY:
                     self.BACK = True
                 if event.key == self.DOWN_KEY:
                     self.DOWN = True
@@ -93,6 +95,9 @@ class Game:
                     self.RIGHT = True
                 if event.key == self.ATTACK_KEY:
                     self.ATTACK = True
+
+            elif event.type == self.MOUSECLICK_KEY:
+                self.MOUSECLICK = True
             # TODO: Make window resizable and have text on screen dynamically change with window size
             # elif event.type == pygame.VIDEORESIZE:
             #     self.DISPLAY_WIDTH, self.DISPLAY_HEIGHT = event.size
@@ -108,6 +113,7 @@ class Game:
         self.START = False
         self.BACK = False
         self.ATTACK = False
+        self.MOUSECLICK = False
 
     # Function used to draw text on the screen
     def draw_text(self, text, size, x, y):
