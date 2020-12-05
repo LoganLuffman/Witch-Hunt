@@ -204,6 +204,8 @@ class ControlsMenu(Menu):
         self.RIGHT_x, self.RIGHT_y = self.label_x, self.mid_height + 100
         self.ATTACK_x, self.ATTACK_y = self.label_x, self.mid_height + 200
 
+        self.show_initial_message = True
+
         # Button sizes
         self.button_length = 150
         self.button_width = 50
@@ -222,17 +224,20 @@ class ControlsMenu(Menu):
         while self.run_display:
             self.game.display.fill((0, 0, 0))
 
-            self.draw_button('UP', self.UP_x, self.UP_y)
-            self.draw_button('DOWN', self.DOWN_x, self.DOWN_y)
-            self.draw_button('LEFT', self.LEFT_x, self.LEFT_y)
-            self.draw_button('RIGHT', self.RIGHT_x, self.RIGHT_y)
-            self.draw_button('ATTACK', self.ATTACK_x, self.ATTACK_y)
-
             self.game.draw_text('Up', 60, self.UP_x, self.UP_y)
             self.game.draw_text('Down', 60, self.DOWN_x, self.DOWN_y)
             self.game.draw_text('Left', 60, self.LEFT_x, self.LEFT_y)
             self.game.draw_text('Right', 60, self.RIGHT_x, self.RIGHT_y)
             self.game.draw_text('Attack', 60, self.ATTACK_x, self.ATTACK_y)
+
+            self.game.draw_text('Click button to remap control', 25, self.UP_offset_x + 70, self.UP_offset_y - 30)
+            # self.game.draw_text('Press key to bind', 25, self.UP_offset_x + 70, self.UP_offset_y - 30)
+
+            self.draw_button('UP', self.UP_x, self.UP_y)
+            self.draw_button('DOWN', self.DOWN_x, self.DOWN_y)
+            self.draw_button('LEFT', self.LEFT_x, self.LEFT_y)
+            self.draw_button('RIGHT', self.RIGHT_x, self.RIGHT_y)
+            self.draw_button('ATTACK', self.ATTACK_x, self.ATTACK_y)
 
             self.game.check_events()
             self.check_input()
@@ -250,19 +255,24 @@ class ControlsMenu(Menu):
         if self.game.MOUSECLICK:
             if (self.UP_offset_x <= mouse_pos[0] <= self.UP_offset_x + self.button_length and
                     self.UP_offset_y <= mouse_pos[1] <= self.UP_offset_y + self.button_width):
-                print('UP')
+                self.keybind_message()
+                self.game.remap_control('UP')
             elif (self.DOWN_offset_x <= mouse_pos[0] <= self.DOWN_offset_x + self.button_length and
                   self.DOWN_offset_y <= mouse_pos[1] <= self.DOWN_offset_y + self.button_width):
-                print('DOWN')
+                self.keybind_message()
+                self.game.remap_control('DOWN')
             elif (self.LEFT_offset_x <= mouse_pos[0] <= self.LEFT_offset_x + self.button_length and
                   self.LEFT_offset_y <= mouse_pos[1] <= self.LEFT_offset_y + self.button_width):
-                print('LEFT')
+                self.keybind_message()
+                self.game.remap_control('LEFT')
             elif (self.RIGHT_offset_x <= mouse_pos[0] <= self.RIGHT_offset_x + self.button_length and
                   self.RIGHT_offset_y <= mouse_pos[1] <= self.RIGHT_offset_y + self.button_width):
-                print('RIGHT')
+                self.keybind_message()
+                self.game.remap_control('RIGHT')
             elif (self.ATTACK_offset_x <= mouse_pos[0] <= self.ATTACK_offset_x + self.button_length and
                   self.ATTACK_offset_y <= mouse_pos[1] <= self.ATTACK_offset_y + self.button_width):
-                print('ATTACK')
+                self.keybind_message()
+                self.game.remap_control('ATTACK')
 
     def draw_button(self, key, x, y):
         color_dark, color_light = (100, 100, 100), (170, 170, 170)
@@ -294,3 +304,9 @@ class ControlsMenu(Menu):
         elif key == 'ATTACK':
             key_name = pygame.key.name(self.game.ATTACK_KEY)
             self.game.draw_text(key_name.capitalize(), 40, text_offset_x, text_offset_y)
+
+    def keybind_message(self):
+        pygame.draw.rect(self.game.display, self.game.BLACK,
+                         [self.UP_offset_x - 150, self.UP_offset_y - 60, 500, 50])
+        self.game.draw_text('Press key to bind', 30, self.UP_offset_x + 80, self.UP_offset_y - 30)
+        self.blit_screen()

@@ -122,3 +122,33 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.center = (x, y)
         self.display.blit(text_surface, text_rect)
+
+    def remap_control(self, key):
+        remapped = False
+
+        while not remapped:
+            if key == 'UP':
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        self.UP_KEY = event.key
+                        remapped = True
+            elif key == 'DOWN':
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        self.DOWN_KEY = event.key
+                        remapped = True
+            elif key == 'LEFT':
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        self.LEFT_KEY = event.key
+                        remapped = True
+            elif key == 'RIGHT':
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        self.RIGHT_KEY = event.key
+                        remapped = True
+            elif key == 'ATTACK':
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        self.ATTACK_KEY = event.key
+                        remapped = True
