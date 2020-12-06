@@ -23,6 +23,7 @@ class Player:
         self.movingDown = False
         self.movingLeft = False
         self.movingRight = False
+        self.hp = 5
         
 
     def drawPlayer(self):
@@ -38,28 +39,28 @@ class Player:
                 
                 self.image = self.up_image
                 self.rect.y -= 16
-            time.sleep(0.1)
+            
 
         elif self.movingDown == True:
             if self.rect.y != 47 * 16:
                 
                 self.image = self.down_image
                 self.rect.y += 16
-            time.sleep(0.1)
+            
 
         elif self.movingLeft == True:
             if self.rect.x != 0:
                 
                 self.image = self.left_image
                 self.rect.x -= 16
-            time.sleep(0.1)
+            
 
         elif self.movingRight == True:
             if self.rect.x != 84 * 16:
                 
                 self.image = self.right_image
                 self.rect.x += 16
-            time.sleep(0.1)
+            
 
     def set_idle_image(self):
         if self.dir == "up":
@@ -70,7 +71,20 @@ class Player:
             self.image = self.left_image
         elif self.dir == "right":
             self.image = self.right_image
-        
+    
+    def getPos(self):
+        return (self.rect.x, self.rect.y)
+    
+    def getPosInFront(self):
+        if self.dir == "up":
+            return (self.rect.x, self.rect.y - 16)
+        elif self.dir == "down":
+            return (self.rect.x, self.rect.y + 16)
+        elif self.dir == "left":
+            return (self.rect.x - 16, self.rect.y)
+        elif self.dir == "right":
+            return (self.rect.x + 16, self.rect.y)
+    
     def attack(self):
         if self.dir == "up":
             self.image = self.up_attack
@@ -96,3 +110,11 @@ class Player:
             
             time.sleep(0.5)
             #self.image = self.right_image
+
+    def checkGameOver(self):
+        if self.hp == 0:
+            return True
+        return False
+
+    def getHp(self):
+        return self.hp

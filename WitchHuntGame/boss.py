@@ -1,5 +1,5 @@
-import pygame
-
+import pygame, random
+from projectile import *
 class Boss:
     def __init__(self, the_game):
         
@@ -21,8 +21,35 @@ class Boss:
     def takeHit(self):
         self.hp -= 1
         print(str(self.hp))
-        if self.hp == 0:
+        if self.hp <= 0:
             return True
         return False
     
-    
+    def getPos(self):
+        return ((self.rect.x, self.rect.y), (self.rect.x + 16, self.rect.y), \
+            (self.rect.x, self.rect.y + 16), (self.rect.x + 16, self.rect.y + 16))
+
+    def attack(self):
+        pattern = random.randint(1, 5)
+        projectiles = []
+        print(pattern)
+        if pattern == 1:
+            for i in range(0, 47, 2):
+                projectiles.append(Projectile(self.screen, 0, i, "right"))
+        elif pattern == 2:
+            for i in range(0, 47, 2):
+                projectiles.append(Projectile(self.screen, 84, i, "left"))
+        elif pattern == 3:
+            for i in range(0, 85, 2):
+                projectiles.append(Projectile(self.screen, i, 0, "down"))
+        elif pattern == 4:
+            for i in range(0, 85, 2):
+                projectiles.append(Projectile(self.screen, i, 47, "up"))
+        elif pattern == 5:
+            for i in range(0, 85, 2):
+                projectiles.append(Projectile(self.screen, i, 47, "up"))
+            for i in range(0, 47, 2):
+                projectiles.append(Projectile(self.screen, 84, i, "left"))
+        return projectiles
+
+        
