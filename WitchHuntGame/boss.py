@@ -32,7 +32,8 @@ class Boss:
     def attack(self):
         pattern = random.randint(1, 5)
         projectiles = []
-        print(pattern)
+        self.image = self.attack_left
+        self.drawBoss()
         if pattern == 1:
             for i in range(0, 47, 2):
                 projectiles.append(Projectile(self.screen, 0, i, "right"))
@@ -50,6 +51,11 @@ class Boss:
                 projectiles.append(Projectile(self.screen, i, 47, "up"))
             for i in range(0, 47, 2):
                 projectiles.append(Projectile(self.screen, 84, i, "left"))
+        self.image = self.idle_left
         return projectiles
+
+    def get_grid(self):
+        return ((self.rect.x // 16, self.rect.y // 16), ((self.rect.x + 16) // 16, self.rect.y // 16), \
+            (self.rect.x // 16, (self.rect.y + 16) // 16), ((self.rect.x + 16) // 16, (self.rect.y + 16) // 16))
 
         

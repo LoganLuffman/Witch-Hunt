@@ -31,7 +31,8 @@ class Player:
         self.screen.blit(self.image, self.rect)
         
         #pygame.draw.rect(self.screen, self.color, [self.posX * 16, self.posY * 16, self.width, self.height])
-
+    def isMoving(self):
+        return self.movingDown or self.movingLeft or self.movingRight or self.movingUp
     def movePlayer(self):
         
         if self.movingUp == True:
@@ -88,25 +89,25 @@ class Player:
     def attack(self):
         if self.dir == "up":
             self.image = self.up_attack
-            print("attack up")
+            #print("attack up")
             self.drawPlayer()
             time.sleep(0.5)
             #self.image = self.up_image
         elif self.dir == "down":
             self.image = self.down_attack
-            print("attack down")
+            #print("attack down")
             
             time.sleep(0.5)
             #self.image = self.down_image
         elif self.dir == "left":
             self.image = self.left_attack
-            print("attack left")
+            #print("attack left")
             
             time.sleep(0.5)
             #self.image = self.left_image
         elif self.dir == "right":
             self.image = self.right_attack
-            print("attack right")
+            #print("attack right")
             
             time.sleep(0.5)
             #self.image = self.right_image
@@ -118,3 +119,6 @@ class Player:
 
     def getHp(self):
         return self.hp
+    
+    def get_grid(self):
+        return (self.rect.x // 16, self.rect.y // 16)

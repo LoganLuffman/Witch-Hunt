@@ -16,5 +16,9 @@ class Tile(pygame.sprite.Sprite):
     
     def getPos(self):
         return (self.rect.x, self.rect.y)
+
+    def get_grid(self):
+        return (self.rect.x // 16, self.rect.y // 16)
+    
     def __str__(self):
         return "< " + self.name + " : " + str(self.rect.x) + " : " + str(self.rect.y) + " >"

@@ -1,5 +1,6 @@
 import pygame, sys, time, csv, os
 
+from squareGrid import *
 from gamemap import *
 from player import *
 from boss import *
@@ -18,11 +19,23 @@ class Game:
         self.player = Player(self.screen)
         self.boss = Boss(self.screen)
         self.minions = []
+        #self.initialSpawn()
+        self.minions.append(Enemy(self.screen, 10, 10))
         self.projectiles = []
         self.gameOver = False
         self.score = 0
         self.bossTime = 0
         self.bossAttackMoveTime = 0
+        self.static_grid = SquareGrid(85, 48)
+        for tile in self.game_map2.tiles:
+            self.static_grid.walls.append(tile.get_grid())
+        for grid in self.boss.get_grid():
+            self.static_grid.walls.append(grid)
+        #print(self.static_grid.walls)
+        self.enemyTimer = 0
+        self.clock = pygame.time.Clock()
+
+        self.temp = 0
 
     def update_screen(self):
         self.screen.fill((92, 133, 86))
@@ -69,13 +82,18 @@ class Game:
                                         self.score += 100
                                         self.update_screen()
                         self.update_screen()
-                        time.sleep(0.5)
+                        time.sleep(0.2)
                         self.player.set_idle_image()
+                    if event.key == pygame.K_e:
+                        print(self.player.get_grid())
+                    if event.key == pygame.K_q:
+                        self.minions.append(Enemy(self.screen, 42, 24))
                 if event.type == pygame.KEYUP:
                     self.player.movingLeft = False
                     self.player.movingUp = False
                     self.player.movingDown = False
                     self.player.movingRight = False
+                    
     '''
     Usage here is insert the entity moving as the first parameter and the entity being checked against as the second. 
     '''
@@ -103,38 +121,45 @@ class Game:
                 return False
         return True
 
+    def check_enemy_collisions(self, currentEnemy):
+        for enemy in self.minions:
+            if enemy == currentEnemy:
+                continue
+            if self.entity_collide(currentEnemy, enemy):
+                return False
+        if self.entity_collide(currentEnemy, self.player):
+                return False
+        for tile in self.game_map2.tiles:
+            if self.entity_collide(currentEnemy, tile):
+                return False
+        return True
+
+
+
     def run_game(self):
         while not self.gameOver:
-            if self.bossTime >= 20 and len(self.projectiles) == 0:
-                self.projectiles = self.boss.attack()
-                #print("here")
-                self.bossTime = 0
+            self.clock.tick(10)
             self.check_events()
             #print(self.bossAttackMoveTime)
-            if self.bossAttackMoveTime >= 20:
-                for projectile in self.projectiles:
-                    #print("move")
-                    projectile.move()
-                    self.bossAttackMoveTime = 0
-            for projectile in self.projectiles:
-                if projectile.checkHit(self.player):
-                    self.projectiles.remove(projectile)
-                if projectile.checkBoundary():
-                    self.projectiles.remove(projectile)
-            
-            if self.check_collisions():
-                self.player.movePlayer()
-                time.sleep(0.1)
-            
+            if self.player.isMoving():
+                if self.check_collisions():
+                    self.player.movePlayer()
+                    #print(self.player.get_grid())
+            #time.sleep(0.05)
+            self.bossAttack()
+            self.move_projectiles()
+            self.moveEnemies()
             self.update_screen()
-            print(self.player.getHp())
             if self.player.checkGameOver():
                 self.gameOver = True
-            self.bossTime += 1
-            self.bossAttackMoveTime += 1
+            self.increment_timers()
         self.reset_game()   
             
-            
+    def increment_timers(self):
+        self.enemyTimer += 1
+        self.bossTime += 1
+        self.bossAttackMoveTime += 1
+
     def reset_game(self):
         self.player = Player(self.screen)
         self.boss = Boss(self.screen)
@@ -142,4 +167,60 @@ class Game:
         self.gameOver = False
         self.score = 0
 
-    
+    def moveEnemies(self):
+        for enemy in self.minions:
+                self.static_grid.entities.append(enemy.get_grid())
+        if len(self.minions) != 0:
+            #path = pathFind(change_grid, self.minions[0].get_grid(), self.player.get_grid())
+            #self.temp += 1
+            #print(self.temp)
+            #move = findNextMove(self.minions[0].get_grid(), self.player.get_grid())
+            for enemy in self.minions:
+                #move = pathFind(change_grid, enemy.get_grid(), self.player.get_grid())
+                if enemy.checkNeighbors(self.player):
+                    enemy.getDir(self.player.get_grid())
+                    #enemy.attack()
+                    #self.update_screen()
+                    #self.player.hp -= 1
+                    #time.sleep(0.2)
+                    #enemy.set_idle_image()
+                    
+                else:
+                    move = findNextMove(enemy.get_grid(), self.player.get_grid(), self.static_grid)
+                    if move != None:
+                        enemy.getDir(move)
+                        #print(move)
+                        if self.check_enemy_collisions(enemy):
+                            enemy.move(move)
+            #self.enemyTimer = 0
+        self.static_grid.clearEntities()
+    def move_projectiles(self):
+        if self.bossAttackMoveTime >= 2:
+            for projectile in self.projectiles:
+                projectile.move()
+                self.bossAttackMoveTime = 0
+        for projectile in self.projectiles:
+            if projectile.checkHit(self.player):
+                self.projectiles.remove(projectile)
+            if projectile.checkBoundary():
+                self.projectiles.remove(projectile)
+
+    def bossAttack(self):
+        if self.bossTime >= 500 and len(self.projectiles) == 0:
+            self.projectiles = self.boss.attack()
+            self.bossTime = 0
+
+    def initialSpawn(self):
+        self.minions.append(Enemy(self.screen, 47, 32))
+        self.minions.append(Enemy(self.screen, 36, 32))
+        self.minions.append(Enemy(self.screen, 47, 21))
+        self.minions.append(Enemy(self.screen, 36, 21))
+        self.minions.append(Enemy(self.screen, 2, 32))
+        self.minions.append(Enemy(self.screen, 2, 13))
+        self.minions.append(Enemy(self.screen, 47, 40))
+        self.minions.append(Enemy(self.screen, 26, 42))
+        self.minions.append(Enemy(self.screen, 57, 42))
+        self.minions.append(Enemy(self.screen, 80, 40))
+        self.minions.append(Enemy(self.screen, 80, 13))
+        self.minions.append(Enemy(self.screen, 57, 11))
+        
