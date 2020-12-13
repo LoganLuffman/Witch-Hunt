@@ -1,20 +1,20 @@
 import pygame, collections, math, random
 
+
 class SquareGrid:
     def __init__(self, w, h):
         self.width = w
         self.height = h
         self.walls = []
         self.entities = []
-    
+
     def in_bounds(self, location):
         (x, y) = location
         return 0 <= x < self.width and 0 <= y < self.height
-    
+
     def passable(self, location):
-        for block in self.walls:
-            if block == location:
-                return False
+        if location not in self.walls and location not in self.entities:
+            return False
         return True
 
     def clearEntities(self):
@@ -22,24 +22,26 @@ class SquareGrid:
 
     def neighbors(self, location):
         (x, y) = location
-        neighbors = [(x+1, y), (x-1, y), (x, y-1), (x, y+1)] # E W N S
-        '''
+        neighbors = [(x + 1, y), (x - 1, y), (x, y - 1), (x, y + 1)]  # E W N S
+        
         if (x + y) % 2 == 0:
             neighbors.reverse()
-        '''
-        #print(neighbors)
+        
+        # print(neighbors)
         for neighbor in neighbors:
-            
+
             if not self.in_bounds(neighbor):
-                print("removing : " + str(neighbor))
+                #print("removing : " + str(neighbor))
                 neighbors.remove(neighbor)
                 continue
             if not self.passable(neighbor):
-                print("removing : " + str(neighbor))
+                #print("removing : " + str(neighbor))
                 neighbors.remove(neighbor)
-            
+
         return neighbors
-'''
+
+
+
 class Node:
     # Initialize the class
     def __init__(self, position:(), parent:()):
@@ -57,7 +59,7 @@ class Node:
     # Print node
     def __repr__(self):
         return ('({0},{1})'.format(self.position, self.f))
-'''    
+'''
 '''
 def pathFind(grid, start, goal):
     
@@ -91,7 +93,7 @@ def pathFind(grid, start, goal):
 
         for next in neighbors:
             
-            if next in grid.walls:
+            if next in grid.walls or next in grid.entities:
                 continue
             
             neighbor = Node(next, current_node)
@@ -113,7 +115,9 @@ def add_to_open(open_list, neighbor):
         if (neighbor == node and neighbor.f >= node.f):
             return False
     return True
-'''
+
+
+
 def findNextMove(start, goal, grid):
     choice = random.randint(1, 2)
     temp = list(grid.neighbors(start))
@@ -129,9 +133,7 @@ def findNextMove(start, goal, grid):
     elif (start[1] < goal[1] and choice == 2) or (start[0] == goal[0] and choice == 1):
         if grid.in_bounds((start[0], start[1] + 1)) and (start[0], start[1] + 1) not in grid.walls:
             return (start[0], start[1] + 1)
-    elif (start[1] > goal[1] and choice == 2) or (start[0] == goal[0] and choice == 1) :
+    elif (start[1] > goal[1] and choice == 2) or (start[0] == goal[0] and choice == 1):
         if grid.in_bounds((start[0], start[1] - 1)) and (start[0], start[1] - 1) not in grid.walls:
             return (start[0], start[1] - 1)
     return temp[0]
-    
-    

@@ -1,5 +1,6 @@
 import pygame
 from menu import *
+from gameplay import *
 
 
 class Game:
@@ -8,7 +9,7 @@ class Game:
         pygame.init()
 
         # Window display size
-        self.DISPLAY_WIDTH = 1366
+        self.DISPLAY_WIDTH = 1360
         self.DISPLAY_HEIGHT = 768
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
 
@@ -49,6 +50,7 @@ class Game:
         self.settings = SettingsMenu(self)
         self.volume = VolumeMenu(self)
         self.controls = ControlsMenu(self)
+        self.gameplay = Gameplay(self)
 
         self.current_menu = self.main_menu
 
@@ -57,18 +59,9 @@ class Game:
         while self.playing:
             self.check_events()
 
-            # Used to go back to previous screen. This can be deleted once gameplay is implemented
-            if self.BACK:
-                self.playing = False
-
-            # Setting the background color and drawing placeholder text on the screen.
-            # Can be modified once gameplay is implemented
-            self.display.fill(self.BLACK)
-            self.draw_text('GAME START', 60, self.DISPLAY_WIDTH / 2, self.DISPLAY_HEIGHT / 2)
-            self.window.blit(self.display, (0, 0))
-            pygame.display.update()
-
+            self.gameplay.run_game()
             self.reset_keys()
+            self.playing = False
 
     # Function used to check what events the play may be doing
     # May have to be modified when gameplay is introduced

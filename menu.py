@@ -12,7 +12,8 @@ class Menu:
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = -125
-
+        self.image = pygame.image.load('images/MenuArt.png')
+        self.image_rect = self.image.get_rect()
     # Creating cursor to signify where player's selector is at
     def draw_cursor(self):
         self.game.draw_text('-->', 25, self.cursor_rect.x, self.cursor_rect.y)
@@ -49,6 +50,7 @@ class MainMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill(self.game.BLACK)
+            self.game.display.blit(self.image, self.image_rect)
 
             # Text that will be displayed in the Main Menu
             self.game.draw_text('Witch Hunt', 72, self.game.DISPLAY_WIDTH / 2, self.game.DISPLAY_HEIGHT / 2 - 100)

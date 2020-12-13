@@ -20,7 +20,7 @@ class Boss:
 
     def takeHit(self):
         self.hp -= 1
-        print(str(self.hp))
+        #print(str(self.hp))
         if self.hp <= 0:
             return True
         return False
@@ -57,5 +57,8 @@ class Boss:
     def get_grid(self):
         return ((self.rect.x // 16, self.rect.y // 16), ((self.rect.x + 16) // 16, self.rect.y // 16), \
             (self.rect.x // 16, (self.rect.y + 16) // 16), ((self.rect.x + 16) // 16, (self.rect.y + 16) // 16))
+    
+    def getHpStr(self):
+        return "Boss HP: " + str(self.hp)
 
         
